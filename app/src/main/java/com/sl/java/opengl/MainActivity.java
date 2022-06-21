@@ -8,6 +8,7 @@ import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.sl.java.opengl.rendering.RectRenderer;
 import com.sl.java.opengl.rendering.TriangleRenderer;
 
 import java.io.IOException;
@@ -20,6 +21,7 @@ public class MainActivity extends AppCompatActivity implements GLSurfaceView.Ren
     private final static String TAG = MainActivity.class.getSimpleName();
     private GLSurfaceView surfaceView;
     private TriangleRenderer triangleRenderer;
+    private RectRenderer rectRenderer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +40,8 @@ public class MainActivity extends AppCompatActivity implements GLSurfaceView.Ren
         surfaceView.setWillNotDraw(false);
 
         triangleRenderer = new TriangleRenderer();
+        rectRenderer = new RectRenderer();
+
     }
 
     @Override
@@ -45,7 +49,8 @@ public class MainActivity extends AppCompatActivity implements GLSurfaceView.Ren
         Log.d(TAG, "onSurfaceCreated...");
         GLES30.glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         try {
-            triangleRenderer.createOnGlThread(this);
+//            triangleRenderer.createOnGlThread(this);
+            rectRenderer.createOnGlThread(this);
         }catch (IOException e) {
             e.printStackTrace();
         }
@@ -60,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements GLSurfaceView.Ren
     public void onDrawFrame(GL10 gl) {
         Log.d(TAG, "onDrawFrame");
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
-        triangleRenderer.draw();
+        rectRenderer.draw();
+//        triangleRenderer.draw();
     }
 }

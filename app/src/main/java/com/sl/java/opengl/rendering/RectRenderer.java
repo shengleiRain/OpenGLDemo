@@ -10,26 +10,36 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+import java.nio.ShortBuffer;
 
 /*********************************************************************
- * Created by shenglei on 2022/6/2.
+ * Created by shenglei on 2022/6/20.
  *********************************************************************/
-public class TriangleRenderer {
-    private static final String TAG = TriangleRenderer.class.getSimpleName();
+public class RectRenderer {
+    private static final String TAG = RectRenderer.class.getSimpleName();
 
     // Shader names.
     private static final String VERTEX_SHADER_NAME = "shaders/triangle.vert";
     private static final String FRAGMENT_SHADER_NAME = "shaders/triangle.frag";
+    private static final int COORDS_PER_VERTEX = 3;
+    private static final int BYTES_PER_VERTEX = 4;
+    private static final int BYTES_PER_INDEX = 2;
 
     private int programId;
-    private int trianglePosAttrib;
+    private int posAttrib;
     private final float[] vertices = {
-            // 第一个三角形
             0.5f, 0.5f, 0.0f,   // 右上角
             0.5f, -0.5f, 0.0f,  // 右下角
-            -0.5f, 0.5f, 0.0f,  // 左上角
+            -0.5f, -0.5f, 0.0f, // 左下角
+            -0.5f, 0.5f, 0.0f   // 左上角
     };
-    private FloatBuffer buffer;
+    private final short[] indices = {
+            0, 1, 3,
+            1, 2, 3
+    };
+
+    private FloatBuffer vbo; //顶点缓冲对象
+    private ShortBuffer ebo; //索引缓冲对象
 
     public void createOnGlThread(Context context) throws IOException {
         int vertexShader = ShaderUtil.loadGLShader(TAG, context, GLES30.GL_VERTEX_SHADER, VERTEX_SHADER_NAME);
@@ -41,23 +51,29 @@ public class TriangleRenderer {
         GLES30.glLinkProgram(programId);
         GLES30.glUseProgram(programId);
 
-        trianglePosAttrib = GLES30.glGetAttribLocation(programId, "aPos");
+        posAttrib = GLES30.glGetAttribLocation(programId, "aPos");
         ShaderUtil.checkGLError(TAG, "Program creation");
 
-        buffer = ByteBuffer.allocateDirect(vertices.length * 4)
+        vbo = ByteBuffer.allocateDirect(vertices.length * BYTES_PER_VERTEX)
                 .order(ByteOrder.nativeOrder()).asFloatBuffer();
-        buffer.put(vertices);
+        vbo.put(vertices);
+        vbo.position(0);
+
+        ebo = ByteBuffer.allocateDirect(indices.length * BYTES_PER_INDEX).order(ByteOrder.nativeOrder()).asShortBuffer();
+        ebo.put(indices);
+        ebo.position(0);
     }
 
     public void draw() {
         GLES30.glUseProgram(programId);
-        GLES30.glEnableVertexAttribArray(trianglePosAttrib);
-        buffer.rewind();
-        GLES30.glVertexAttribPointer(trianglePosAttrib, 3, GLES20.GL_FLOAT, false, 0, buffer);
-        GLES30.glDrawArrays(GLES30.GL_TRIANGLES, 0, buffer.remaining()/3);
-        GLES30.glDisableVertexAttribArray(trianglePosAttrib);
+        GLES30.glEnableVertexAttribArray(posAttrib);
+        GLES30.glVertexAttribPointer(posAttrib, COORDS_PER_VERTEX, GLES20.GL_FLOAT, false, 0, vbo);
+
+        GLES30.glDrawElements(GLES30.GL_TRIANGLES, indices.length, GLES30.GL_UNSIGNED_SHORT, ebo);
+
+        GLES30.glDisableVertexAttribArray(posAttrib);
 
         ShaderUtil.checkGLError(TAG, "Draw");
         GLES30.glUseProgram(0);
     }
- }
+}
