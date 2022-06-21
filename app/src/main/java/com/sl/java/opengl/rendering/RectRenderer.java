@@ -19,8 +19,8 @@ public class RectRenderer {
     private static final String TAG = RectRenderer.class.getSimpleName();
 
     // Shader names.
-    private static final String VERTEX_SHADER_NAME = "shaders/triangle.vert";
-    private static final String FRAGMENT_SHADER_NAME = "shaders/triangle.frag";
+    private static final String VERTEX_SHADER_NAME = "shaders/rect.vert";
+    private static final String FRAGMENT_SHADER_NAME = "shaders/rect.frag";
     private static final int COORDS_PER_VERTEX = 3;
     private static final int BYTES_PER_VERTEX = 4;
     private static final int BYTES_PER_INDEX = 2;
@@ -68,7 +68,6 @@ public class RectRenderer {
         GLES30.glUseProgram(programId);
         GLES30.glEnableVertexAttribArray(posAttrib);
         GLES30.glVertexAttribPointer(posAttrib, COORDS_PER_VERTEX, GLES20.GL_FLOAT, false, 0, vbo);
-
         GLES30.glDrawElements(GLES30.GL_TRIANGLES, indices.length, GLES30.GL_UNSIGNED_SHORT, ebo);
 
         GLES30.glDisableVertexAttribArray(posAttrib);

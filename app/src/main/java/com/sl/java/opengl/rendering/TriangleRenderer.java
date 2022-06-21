@@ -3,6 +3,12 @@ package com.sl.java.opengl.rendering;
 import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.GLES30;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
+import android.util.Log;
+
+import androidx.annotation.NonNull;
 
 import com.sl.java.opengl.utils.ShaderUtil;
 
@@ -10,6 +16,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+import java.util.Random;
 
 /*********************************************************************
  * Created by shenglei on 2022/6/2.
@@ -23,13 +30,17 @@ public class TriangleRenderer {
 
     private int programId;
     private int trianglePosAttrib;
+    private int uniColorAttrib;
     private final float[] vertices = {
             // 第一个三角形
-            0.5f, 0.5f, 0.0f,   // 右上角
-            0.5f, -0.5f, 0.0f,  // 右下角
-            -0.5f, 0.5f, 0.0f,  // 左上角
+            0.0f, 0.5f, 0.0f,
+            -0.5f,-0.5f, 0.0f,
+            0.5f, -0.5f, 0.0f
     };
     private FloatBuffer buffer;
+
+    private int seed = 0;
+    private final Random random = new Random();
 
     public void createOnGlThread(Context context) throws IOException {
         int vertexShader = ShaderUtil.loadGLShader(TAG, context, GLES30.GL_VERTEX_SHADER, VERTEX_SHADER_NAME);
@@ -42,6 +53,7 @@ public class TriangleRenderer {
         GLES30.glUseProgram(programId);
 
         trianglePosAttrib = GLES30.glGetAttribLocation(programId, "aPos");
+        uniColorAttrib = GLES30.glGetUniformLocation(programId, "uniColor");
         ShaderUtil.checkGLError(TAG, "Program creation");
 
         buffer = ByteBuffer.allocateDirect(vertices.length * 4)
@@ -51,6 +63,12 @@ public class TriangleRenderer {
 
     public void draw() {
         GLES30.glUseProgram(programId);
+        random.setSeed(seed++);
+        float x = random.nextFloat();
+        float y = random.nextFloat();
+        float z = random.nextFloat();
+        Log.d(TAG, "x="+x+"; y="+y+"; z="+z);
+        GLES30.glUniform4f(uniColorAttrib, x, y, z, 1.0f);
         GLES30.glEnableVertexAttribArray(trianglePosAttrib);
         buffer.rewind();
         GLES30.glVertexAttribPointer(trianglePosAttrib, 3, GLES20.GL_FLOAT, false, 0, buffer);

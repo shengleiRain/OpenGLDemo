@@ -1,11 +1,15 @@
 package com.sl.java.opengl;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.opengl.GLES20;
 import android.opengl.GLES30;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.util.Log;
 
 import com.sl.java.opengl.rendering.RectRenderer;
@@ -22,6 +26,13 @@ public class MainActivity extends AppCompatActivity implements GLSurfaceView.Ren
     private GLSurfaceView surfaceView;
     private TriangleRenderer triangleRenderer;
     private RectRenderer rectRenderer;
+    private final Handler handler = new Handler(Looper.getMainLooper()) {
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            surfaceView.requestRender();
+            handler.sendEmptyMessageDelayed(0, 1000L);
+        }
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements GLSurfaceView.Ren
         triangleRenderer = new TriangleRenderer();
         rectRenderer = new RectRenderer();
 
+        handler.sendEmptyMessage(0);
     }
 
     @Override
@@ -49,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements GLSurfaceView.Ren
         Log.d(TAG, "onSurfaceCreated...");
         GLES30.glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         try {
-//            triangleRenderer.createOnGlThread(this);
+            triangleRenderer.createOnGlThread(this);
             rectRenderer.createOnGlThread(this);
         }catch (IOException e) {
             e.printStackTrace();
@@ -66,6 +78,6 @@ public class MainActivity extends AppCompatActivity implements GLSurfaceView.Ren
         Log.d(TAG, "onDrawFrame");
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
         rectRenderer.draw();
-//        triangleRenderer.draw();
+        triangleRenderer.draw();
     }
 }
