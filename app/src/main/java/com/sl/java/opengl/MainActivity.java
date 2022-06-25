@@ -1,8 +1,5 @@
 package com.sl.java.opengl;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.opengl.GLES20;
 import android.opengl.GLES30;
 import android.opengl.GLSurfaceView;
@@ -11,6 +8,10 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
+import android.view.View;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.sl.java.opengl.rendering.RectRenderer;
 import com.sl.java.opengl.rendering.TexRectRenderer;
@@ -21,7 +22,7 @@ import java.io.IOException;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-public class MainActivity extends AppCompatActivity implements GLSurfaceView.Renderer{
+public class MainActivity extends AppCompatActivity implements GLSurfaceView.Renderer {
 
     private final static String TAG = MainActivity.class.getSimpleName();
     private GLSurfaceView surfaceView;
@@ -31,10 +32,11 @@ public class MainActivity extends AppCompatActivity implements GLSurfaceView.Ren
     private final Handler handler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(@NonNull Message msg) {
-            surfaceView.requestRender();
-            handler.sendEmptyMessageDelayed(0, 1000L);
+//            surfaceView.requestRender();
+//            handler.sendEmptyMessageDelayed(0, 1000L);
         }
     };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +59,38 @@ public class MainActivity extends AppCompatActivity implements GLSurfaceView.Ren
         texRectRenderer = new TexRectRenderer();
 
         handler.sendEmptyMessage(0);
+
+        findViewById(R.id.front).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                texRectRenderer.moveCamera(TexRectRenderer.Direction.FRONT);
+                surfaceView.requestRender();
+            }
+        });
+
+        findViewById(R.id.back).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                texRectRenderer.moveCamera(TexRectRenderer.Direction.BACK);
+                surfaceView.requestRender();
+            }
+        });
+
+        findViewById(R.id.left).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                texRectRenderer.moveCamera(TexRectRenderer.Direction.LEFT);
+                surfaceView.requestRender();
+            }
+        });
+
+        findViewById(R.id.right).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                texRectRenderer.moveCamera(TexRectRenderer.Direction.RIGHT);
+                surfaceView.requestRender();
+            }
+        });
     }
 
     @Override
@@ -68,14 +102,14 @@ public class MainActivity extends AppCompatActivity implements GLSurfaceView.Ren
 //            triangleRenderer.createOnGlThread(this);
 //            rectRenderer.createOnGlThread(this);
             texRectRenderer.createOnGlThread(this);
-        }catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
-        Log.d(TAG, "onSurfaceChanged-->width="+width+" height="+height);
+        Log.d(TAG, "onSurfaceChanged-->width=" + width + " height=" + height);
         texRectRenderer.onSizeChanged(width, height);
         GLES30.glViewport(0, 0, width, height);
     }

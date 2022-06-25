@@ -6,6 +6,7 @@ import android.opengl.GLES30;
 import android.opengl.Matrix;
 
 import com.sl.java.opengl.R;
+import com.sl.java.opengl.model.Vec3;
 import com.sl.java.opengl.utils.ShaderUtil;
 import com.sl.java.opengl.utils.TextureUtil;
 
@@ -44,45 +45,45 @@ public class TexRectRenderer {
             //---- 位置 ----
             -0.5f, -0.5f, -0.5f,
             0.5f, -0.5f, -0.5f,
-            0.5f,  0.5f, -0.5f,
-            0.5f,  0.5f, -0.5f,
-            -0.5f,  0.5f, -0.5f,
+            0.5f, 0.5f, -0.5f,
+            0.5f, 0.5f, -0.5f,
+            -0.5f, 0.5f, -0.5f,
             -0.5f, -0.5f, -0.5f,
 
-            -0.5f, -0.5f,  0.5f,
-            0.5f, -0.5f,  0.5f,
-            0.5f,  0.5f,  0.5f,
-            0.5f,  0.5f,  0.5f,
-            -0.5f,  0.5f,  0.5f,
-            -0.5f, -0.5f,  0.5f,
+            -0.5f, -0.5f, 0.5f,
+            0.5f, -0.5f, 0.5f,
+            0.5f, 0.5f, 0.5f,
+            0.5f, 0.5f, 0.5f,
+            -0.5f, 0.5f, 0.5f,
+            -0.5f, -0.5f, 0.5f,
 
-            -0.5f,  0.5f,  0.5f,
-            -0.5f,  0.5f, -0.5f,
+            -0.5f, 0.5f, 0.5f,
+            -0.5f, 0.5f, -0.5f,
             -0.5f, -0.5f, -0.5f,
             -0.5f, -0.5f, -0.5f,
-            -0.5f, -0.5f,  0.5f,
-            -0.5f,  0.5f,  0.5f,
+            -0.5f, -0.5f, 0.5f,
+            -0.5f, 0.5f, 0.5f,
 
-            0.5f,  0.5f,  0.5f,
-            0.5f,  0.5f, -0.5f,
+            0.5f, 0.5f, 0.5f,
+            0.5f, 0.5f, -0.5f,
             0.5f, -0.5f, -0.5f,
             0.5f, -0.5f, -0.5f,
-            0.5f, -0.5f,  0.5f,
-            0.5f,  0.5f,  0.5f,
+            0.5f, -0.5f, 0.5f,
+            0.5f, 0.5f, 0.5f,
 
             -0.5f, -0.5f, -0.5f,
             0.5f, -0.5f, -0.5f,
-            0.5f, -0.5f,  0.5f,
-            0.5f, -0.5f,  0.5f,
-            -0.5f, -0.5f,  0.5f,
+            0.5f, -0.5f, 0.5f,
+            0.5f, -0.5f, 0.5f,
+            -0.5f, -0.5f, 0.5f,
             -0.5f, -0.5f, -0.5f,
 
-            -0.5f,  0.5f, -0.5f,
-            0.5f,  0.5f, -0.5f,
-            0.5f,  0.5f,  0.5f,
-            0.5f,  0.5f,  0.5f,
-            -0.5f,  0.5f,  0.5f,
-            -0.5f,  0.5f, -0.5f
+            -0.5f, 0.5f, -0.5f,
+            0.5f, 0.5f, -0.5f,
+            0.5f, 0.5f, 0.5f,
+            0.5f, 0.5f, 0.5f,
+            -0.5f, 0.5f, 0.5f,
+            -0.5f, 0.5f, -0.5f
     };
     private static final float[] colorVertices = {
             1.0f, 0.0f, 0.0f,
@@ -145,6 +146,40 @@ public class TexRectRenderer {
     private float[] viewMatrix = new float[16];
     private float[] projectionMatrix = new float[16];
 
+    private Vec3 cameraPos = new Vec3(0f, 0f, 5f);
+    private Vec3 cameraFront = new Vec3(0f, 0f, -1f);
+    private Vec3 cameraUp = new Vec3(0f, 1f, 0f);
+    private static final float speed = 0.05f;
+
+    public enum Direction {
+        FRONT, BACK, LEFT, RIGHT
+    }
+
+
+    public void moveCamera(Direction direction) {
+        switch (direction) {
+            case FRONT:
+                cameraPos = Vec3.add(cameraPos, cameraFront.multiply(speed));
+                updateViewMatrix();
+                break;
+            case BACK:
+                cameraPos = Vec3.minus(cameraPos, cameraFront.multiply(speed));
+                updateViewMatrix();
+                break;
+            case LEFT:
+                break;
+            case RIGHT:
+                break;
+        }
+    }
+
+    private void updateViewMatrix() {
+        Vec3 cameraTarget = Vec3.add(cameraPos, cameraFront);
+        Matrix.setLookAtM(viewMatrix, 0, cameraPos.x, cameraPos.y, cameraPos.z, cameraTarget.x, cameraTarget.y, cameraTarget.z, cameraUp.x, cameraUp.y, cameraTarget.z);
+        viewMatrixBuffer.position(0);
+        viewMatrixBuffer.put(viewMatrix);
+        viewMatrixBuffer.position(0);
+    }
 
     public void createOnGlThread(Context context) throws IOException {
         int fragShader = ShaderUtil.loadGLShader(TAG, context, GLES30.GL_FRAGMENT_SHADER, FRAGMENT_NAME);
@@ -201,18 +236,13 @@ public class TexRectRenderer {
         Matrix.setIdentityM(projectionMatrix, 0);
 
         Matrix.rotateM(modelMatrix, 0, -55f, 1.0f, 0.0f, 0.0f);
-        Matrix.translateM(viewMatrix, 0, 0f, 0f, -5.0f);
         Matrix.perspectiveM(projectionMatrix, 0, 45f, (float) width / (float) height, 0.1f, 100f);
 
         modelMatrixBuffer.position(0);
         modelMatrixBuffer.put(modelMatrix);
         modelMatrixBuffer.position(0);
-        GLES30.glUniformMatrix4fv(modelMUniform, 1, false, modelMatrixBuffer);
 
-        viewMatrixBuffer.position(0);
-        viewMatrixBuffer.put(viewMatrix);
-        viewMatrixBuffer.position(0);
-        GLES30.glUniformMatrix4fv(viewMUniform, 1, false, viewMatrixBuffer);
+        updateViewMatrix();
 
         projectionMatrixBuffer.position(0);
         projectionMatrixBuffer.put(projectionMatrix);
@@ -236,12 +266,9 @@ public class TexRectRenderer {
         GLES30.glActiveTexture(GLES20.GL_TEXTURE1);
         GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, texture2Id);
 
-        Matrix.rotateM(modelMatrix, 0, -5f, 1.0f, 1.0f, 1.0f);
-        modelMatrixBuffer.position(0);
-        modelMatrixBuffer.put(modelMatrix);
-        modelMatrixBuffer.position(0);
         GLES30.glUniformMatrix4fv(modelMUniform, 1, false, modelMatrixBuffer);
-
+        GLES30.glUniformMatrix4fv(viewMUniform, 1, false, viewMatrixBuffer);
+        GLES30.glUniformMatrix4fv(projectionMUniform, 1, false, projectionMatrixBuffer);
 
         GLES30.glDrawArrays(GLES30.GL_TRIANGLES, 0, 36);
 //        GLES30.glDrawElements(GLES30.GL_TRIANGLES, indices.length, GLES30.GL_UNSIGNED_SHORT, ebo);
