@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements GLSurfaceView.Ren
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         Log.d(TAG, "onSurfaceCreated...");
         GLES30.glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+        GLES30.glEnable(GLES30.GL_DEPTH_TEST);
         try {
 //            triangleRenderer.createOnGlThread(this);
 //            rectRenderer.createOnGlThread(this);

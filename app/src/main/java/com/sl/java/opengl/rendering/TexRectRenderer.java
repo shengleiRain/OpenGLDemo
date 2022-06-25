@@ -42,10 +42,47 @@ public class TexRectRenderer {
 
     private static final float[] posVertices = {
             //---- 位置 ----
-            0.5f, 0.5f, 0.0f,
-            0.5f, -0.5f, 0.0f,
-            -0.5f, -0.5f, 0.0f,
-            -0.5f, 0.5f, 0.0f
+            -0.5f, -0.5f, -0.5f,
+            0.5f, -0.5f, -0.5f,
+            0.5f,  0.5f, -0.5f,
+            0.5f,  0.5f, -0.5f,
+            -0.5f,  0.5f, -0.5f,
+            -0.5f, -0.5f, -0.5f,
+
+            -0.5f, -0.5f,  0.5f,
+            0.5f, -0.5f,  0.5f,
+            0.5f,  0.5f,  0.5f,
+            0.5f,  0.5f,  0.5f,
+            -0.5f,  0.5f,  0.5f,
+            -0.5f, -0.5f,  0.5f,
+
+            -0.5f,  0.5f,  0.5f,
+            -0.5f,  0.5f, -0.5f,
+            -0.5f, -0.5f, -0.5f,
+            -0.5f, -0.5f, -0.5f,
+            -0.5f, -0.5f,  0.5f,
+            -0.5f,  0.5f,  0.5f,
+
+            0.5f,  0.5f,  0.5f,
+            0.5f,  0.5f, -0.5f,
+            0.5f, -0.5f, -0.5f,
+            0.5f, -0.5f, -0.5f,
+            0.5f, -0.5f,  0.5f,
+            0.5f,  0.5f,  0.5f,
+
+            -0.5f, -0.5f, -0.5f,
+            0.5f, -0.5f, -0.5f,
+            0.5f, -0.5f,  0.5f,
+            0.5f, -0.5f,  0.5f,
+            -0.5f, -0.5f,  0.5f,
+            -0.5f, -0.5f, -0.5f,
+
+            -0.5f,  0.5f, -0.5f,
+            0.5f,  0.5f, -0.5f,
+            0.5f,  0.5f,  0.5f,
+            0.5f,  0.5f,  0.5f,
+            -0.5f,  0.5f,  0.5f,
+            -0.5f,  0.5f, -0.5f
     };
     private static final float[] colorVertices = {
             1.0f, 0.0f, 0.0f,
@@ -54,10 +91,42 @@ public class TexRectRenderer {
             1.0f, 1.0f, 0.0f,
     };
     private static final float[] texVertices = {
-            1.0f, 1.0f,   // 右上
-            1.0f, 0.0f,   // 右下
-            0.0f, 0.0f,   // 左下
-            0.0f, 1.0f    // 左上
+            0.0f, 0.0f,
+            1.0f, 0.0f,
+            1.0f, 1.0f,
+            1.0f, 1.0f,
+            0.0f, 1.0f,
+            0.0f, 0.0f,
+            0.0f, 0.0f,
+            1.0f, 0.0f,
+            1.0f, 1.0f,
+            1.0f, 1.0f,
+            0.0f, 1.0f,
+            0.0f, 0.0f,
+            1.0f, 0.0f,
+            1.0f, 1.0f,
+            0.0f, 1.0f,
+            0.0f, 1.0f,
+            0.0f, 0.0f,
+            1.0f, 0.0f,
+            1.0f, 0.0f,
+            1.0f, 1.0f,
+            0.0f, 1.0f,
+            0.0f, 1.0f,
+            0.0f, 0.0f,
+            1.0f, 0.0f,
+            0.0f, 1.0f,
+            1.0f, 1.0f,
+            1.0f, 0.0f,
+            1.0f, 0.0f,
+            0.0f, 0.0f,
+            0.0f, 1.0f,
+            0.0f, 1.0f,
+            1.0f, 1.0f,
+            1.0f, 0.0f,
+            1.0f, 0.0f,
+            0.0f, 0.0f,
+            0.0f, 1.0f
     };
     private static final short[] indices = {
             0, 1, 3, // first triangle
@@ -132,7 +201,7 @@ public class TexRectRenderer {
         Matrix.setIdentityM(projectionMatrix, 0);
 
         Matrix.rotateM(modelMatrix, 0, -55f, 1.0f, 0.0f, 0.0f);
-        Matrix.translateM(viewMatrix, 0, 0f, 0f, -3.0f);
+        Matrix.translateM(viewMatrix, 0, 0f, 0f, -5.0f);
         Matrix.perspectiveM(projectionMatrix, 0, 45f, (float) width / (float) height, 0.1f, 100f);
 
         modelMatrixBuffer.position(0);
@@ -167,16 +236,15 @@ public class TexRectRenderer {
         GLES30.glActiveTexture(GLES20.GL_TEXTURE1);
         GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, texture2Id);
 
-        Matrix.rotateM(modelMatrix, 0, -5f, 0f, 0f, 1.0f);
+        Matrix.rotateM(modelMatrix, 0, -5f, 1.0f, 1.0f, 1.0f);
         modelMatrixBuffer.position(0);
         modelMatrixBuffer.put(modelMatrix);
         modelMatrixBuffer.position(0);
         GLES30.glUniformMatrix4fv(modelMUniform, 1, false, modelMatrixBuffer);
 
-//        Matrix.scaleM(modelMatrix, 0, 0.5f, 0.5f, 0.5f);
 
-
-        GLES30.glDrawElements(GLES30.GL_TRIANGLES, indices.length, GLES30.GL_UNSIGNED_SHORT, ebo);
+        GLES30.glDrawArrays(GLES30.GL_TRIANGLES, 0, 36);
+//        GLES30.glDrawElements(GLES30.GL_TRIANGLES, indices.length, GLES30.GL_UNSIGNED_SHORT, ebo);
         GLES30.glDisableVertexAttribArray(posAttrib);
         GLES30.glDisableVertexAttribArray(colorAttrib);
         GLES30.glDisableVertexAttribArray(texCoordAttrib);
