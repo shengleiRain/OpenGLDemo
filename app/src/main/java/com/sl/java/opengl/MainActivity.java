@@ -74,6 +74,8 @@ public class MainActivity extends AppCompatActivity implements GLSurfaceView.Ren
 
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
+        Log.d(TAG, "onSurfaceChanged-->width="+width+" height="+height);
+        texRectRenderer.onSizeChanged(width, height);
         GLES30.glViewport(0, 0, width, height);
     }
 
