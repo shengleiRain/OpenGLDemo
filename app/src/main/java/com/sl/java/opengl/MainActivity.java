@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.sl.java.opengl.rendering.RectRenderer;
 import com.sl.java.opengl.rendering.TexRectRenderer;
 import com.sl.java.opengl.rendering.TriangleRenderer;
+import com.sl.java.opengl.rendering.cnative.NativeRender;
 
 import java.io.IOException;
 
@@ -29,6 +30,7 @@ public class MainActivity extends AppCompatActivity implements GLSurfaceView.Ren
     private TriangleRenderer triangleRenderer;
     private RectRenderer rectRenderer;
     private TexRectRenderer texRectRenderer;
+    private NativeRender nativeRender;
     private final Handler handler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(@NonNull Message msg) {
@@ -44,6 +46,18 @@ public class MainActivity extends AppCompatActivity implements GLSurfaceView.Ren
         initView();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        surfaceView.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        surfaceView.onPause();
+    }
+
     private void initView() {
         surfaceView = findViewById(R.id.surfaceView);
         // Set up renderer.
@@ -54,9 +68,9 @@ public class MainActivity extends AppCompatActivity implements GLSurfaceView.Ren
         surfaceView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
         surfaceView.setWillNotDraw(false);
 
-        triangleRenderer = new TriangleRenderer();
-        rectRenderer = new RectRenderer();
-        texRectRenderer = new TexRectRenderer();
+//        triangleRenderer = new TriangleRenderer();
+//        rectRenderer = new RectRenderer();
+//        texRectRenderer = new TexRectRenderer();
 
         handler.sendEmptyMessage(0);
 
@@ -96,13 +110,15 @@ public class MainActivity extends AppCompatActivity implements GLSurfaceView.Ren
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         Log.d(TAG, "onSurfaceCreated...");
-        GLES30.glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-        GLES30.glEnable(GLES30.GL_DEPTH_TEST);
+//        GLES30.glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+//        GLES30.glEnable(GLES30.GL_DEPTH_TEST);
         try {
 //            triangleRenderer.createOnGlThread(this);
 //            rectRenderer.createOnGlThread(this);
-            texRectRenderer.createOnGlThread(this);
-        } catch (IOException e) {
+//            texRectRenderer.createOnGlThread(this);
+            nativeRender = new NativeRender();
+            nativeRender.onSurfaceCreated();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -110,16 +126,18 @@ public class MainActivity extends AppCompatActivity implements GLSurfaceView.Ren
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         Log.d(TAG, "onSurfaceChanged-->width=" + width + " height=" + height);
-        texRectRenderer.onSizeChanged(width, height);
-        GLES30.glViewport(0, 0, width, height);
+//        texRectRenderer.onSizeChanged(width, height);
+//        GLES30.glViewport(0, 0, width, height);
+        nativeRender.onSurfaceChanged(width, height);
     }
 
     @Override
     public void onDrawFrame(GL10 gl) {
         Log.d(TAG, "onDrawFrame");
-        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
-//        rectRenderer.draw();
-//        triangleRenderer.draw();
-        texRectRenderer.draw();
+//        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
+////        rectRenderer.draw();
+////        triangleRenderer.draw();
+//        texRectRenderer.draw();
+        nativeRender.onDrawFrame();
     }
 }
