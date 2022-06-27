@@ -12,3 +12,12 @@ BaseSample::~BaseSample() {
     delete program;
     program = nullptr;
 }
+
+void BaseSample::setImageData(const ImageSharedPtr &imageSharedPtr) {
+
+}
+
+void BaseSample::setViewSize(int width, int height) {
+    this->width = width;
+    this->height = height;
+}

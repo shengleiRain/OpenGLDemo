@@ -9,6 +9,7 @@
 #include "AndroidLog.h"
 #include <GLES3/gl3.h>
 #include "TriangleSample.h"
+#include "RectTexSample.h"
 
 class NativeRenderContext {
 public:
@@ -19,12 +20,15 @@ public:
     static void onSurfaceChanged(int width, int height);
 
     static void onDrawFrame();
+
+    static void setBitmap(const ImageSharedPtr& imageSharedPtr);
 private:
     static NativeRenderContext *sInstance;
     static std::once_flag sOnceFlag;
     static const char* tag;
 
     static TriangleSample triangleSample;
+    static RectTexSample rectTexSample;
 };
 
 

@@ -1,5 +1,7 @@
 package com.sl.java.opengl.rendering.cnative;
 
+import android.graphics.Bitmap;
+
 /*********************************************************************
  * Created by shenglei on 2022/6/26.
  *********************************************************************/
@@ -20,10 +22,15 @@ public class NativeRender extends JNIBase{
         nativeOnDrawFrame();
     }
 
+    public void setBitmap(Bitmap bitmap) {
+        nativeSetBitmap(bitmap);
+    }
+
 
     private native void nativeOnInit();
     private native void nativeOnUnInit();
     private native void nativeOnSurfaceCreated();
     private native void nativeOnSurfaceChanged(int width, int height);
     private native void nativeOnDrawFrame();
+    private native void nativeSetBitmap(Bitmap bitmap);
 }

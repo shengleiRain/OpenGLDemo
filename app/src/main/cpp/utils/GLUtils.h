@@ -8,6 +8,7 @@
 #include <GLES3/gl3.h>
 #include "AndroidLog.h"
 #include "android_fopen.h"
+#include "CoreImage.h"
 
 class GLUtils {
 public:
@@ -29,6 +30,8 @@ public:
     static void deleteProgram(GLuint &program);
 
     static void checkGLError(const char *glOperation);
+
+    static GLuint loadTexture(const ImageSharedPtr& imageSharedPtr);
 };
 
 

@@ -120,5 +120,28 @@ GLuint GLUtils::loadShaderFromAsset(GLenum shaderType, const char *sourceFilenam
     return loadShader(shaderType, reinterpret_cast<const char *>(ret.data()));
 }
 
+GLuint GLUtils::loadTexture(const ImageSharedPtr &imageSharedPtr) {
+    if (imageSharedPtr == nullptr) {
+        return 0;
+    }
+    GLuint texture = 0;
+    glGenTextures(1, &texture);
+    auto target = GL_TEXTURE_2D;
+    glBindTexture(target, texture);
+    // 为当前绑定的纹理对象设置环绕、过滤方式
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    glTexImage2D(target, 0, GL_RGBA, imageSharedPtr->GetWidth(), imageSharedPtr->GetHeight(), 0,
+                 GL_RGBA, GL_UNSIGNED_BYTE, imageSharedPtr->GetPixels());
+
+    glGenerateMipmap(target);
+    // 解绑
+    glBindTexture(target, GL_NONE);
+    return texture;
+}
+
 
 

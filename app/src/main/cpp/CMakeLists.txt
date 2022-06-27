@@ -13,6 +13,8 @@ add_library(
         samples/BaseSample.cpp
         samples/TriangleSample.cpp
         samples/RectTexSample.cpp
+        image/CoreImage.cpp
+        image/ImageUtil.cpp
 )
 
 include_directories(utils)
@@ -20,10 +22,12 @@ include_directories(renders)
 include_directories(samples)
 include_directories(thirdparty/glm)
 include_directories(thirdparty/glm/glm)
+include_directories(image)
 
 
 target_link_libraries(
         opengl
         android
         GLESv3
+        jnigraphics
         log)

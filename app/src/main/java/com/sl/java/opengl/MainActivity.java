@@ -1,5 +1,7 @@
 package com.sl.java.opengl;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.opengl.GLES20;
 import android.opengl.GLES30;
 import android.opengl.GLSurfaceView;
@@ -111,13 +113,21 @@ public class MainActivity extends AppCompatActivity implements GLSurfaceView.Ren
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         Log.d(TAG, "onSurfaceCreated...");
 //        GLES30.glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-//        GLES30.glEnable(GLES30.GL_DEPTH_TEST);
+        GLES30.glEnable(GLES30.GL_DEPTH_TEST);
         try {
 //            triangleRenderer.createOnGlThread(this);
 //            rectRenderer.createOnGlThread(this);
 //            texRectRenderer.createOnGlThread(this);
             nativeRender = new NativeRender();
             nativeRender.onSurfaceCreated();
+
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inScaled = false;
+
+            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.container, options);
+            nativeRender.setBitmap(bitmap);
+            bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.awesomeface, options);
+            nativeRender.setBitmap(bitmap);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -134,8 +144,8 @@ public class MainActivity extends AppCompatActivity implements GLSurfaceView.Ren
     @Override
     public void onDrawFrame(GL10 gl) {
         Log.d(TAG, "onDrawFrame");
-//        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
-////        rectRenderer.draw();
+        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
+//        rectRenderer.draw();
 ////        triangleRenderer.draw();
 //        texRectRenderer.draw();
         nativeRender.onDrawFrame();

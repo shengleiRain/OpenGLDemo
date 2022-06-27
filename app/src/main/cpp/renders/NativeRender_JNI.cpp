@@ -4,6 +4,7 @@
 #include <jni.h>
 #include "AndroidLog.h"
 #include "NativeRenderContext.h"
+#include "ImageUtil.h"
 
 
 extern "C"
@@ -35,4 +36,18 @@ JNIEXPORT void JNICALL
 Java_com_sl_java_opengl_rendering_cnative_NativeRender_nativeOnDrawFrame(JNIEnv *env,
                                                                          jobject thiz) {
     NativeRenderContext::onDrawFrame();
+}
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_sl_java_opengl_rendering_cnative_NativeRender_nativeSetBitmap(JNIEnv *env, jobject thiz,
+                                                                       jobject bitmap) {
+    void* pixelAddr = nullptr;
+    AndroidBitmap_lockPixels(env, bitmap, &pixelAddr);
+
+    AndroidBitmapInfo bitmapInfo;
+    AndroidBitmap_getInfo(env, bitmap, &bitmapInfo);
+
+    ImageSharedPtr imageSharedPtr = ImageUtil::convertBitmap2Image(pixelAddr, bitmapInfo);
+    NativeRenderContext::setBitmap(imageSharedPtr);
+    AndroidBitmap_unlockPixels(env, bitmap);
 }
