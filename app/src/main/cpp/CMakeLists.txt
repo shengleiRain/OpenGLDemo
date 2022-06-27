@@ -10,7 +10,10 @@ add_library(
         utils/GLProgram.cpp
         renders/NativeRender_JNI.cpp
         renders/NativeRenderContext.cpp
-        samples/TriangleSample.cpp)
+        samples/BaseSample.cpp
+        samples/TriangleSample.cpp
+        samples/RectTexSample.cpp
+)
 
 include_directories(utils)
 include_directories(renders)

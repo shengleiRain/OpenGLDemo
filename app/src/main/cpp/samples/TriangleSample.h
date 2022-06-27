@@ -6,20 +6,15 @@
 #define OPENGLDEMO_TRIANGLESAMPLE_H
 
 #include "GLProgram.h"
+#include "BaseSample.h"
 
-class TriangleSample {
-private:
-    GLProgram* program = nullptr;
-    static const char* VERTEX_NAME;
-    static const char* FRAG_NAME;
-    static const char* vShaderStr;
-    static const char* fShaderStr;
-
+class TriangleSample : public BaseSample{
 public:
     TriangleSample();
     ~TriangleSample();
-    void init();
-    void draw();
+    void draw() const override;
+    const char * vertexShaderName() const override;
+    const char * fragShaderName() const override;
 };
 
 

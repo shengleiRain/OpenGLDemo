@@ -4,40 +4,14 @@
 
 #include "TriangleSample.h"
 
-const char *TriangleSample::VERTEX_NAME = "shaders/rect.vert";
-const char *TriangleSample::FRAG_NAME = "shaders/rect.frag";
-
-const char* TriangleSample::vShaderStr =
-        "#version 300 es                          \n"
-        "layout(location = 0) in vec4 vPosition;  \n"
-        "void main()                              \n"
-        "{                                        \n"
-        "   gl_Position = vPosition;              \n"
-        "}                                        \n";
-
-const char* TriangleSample::fShaderStr =
-        "#version 300 es                              \n"
-        "precision mediump float;                     \n"
-        "out vec4 fragColor;                          \n"
-        "void main()                                  \n"
-        "{                                            \n"
-        "   fragColor = vec4 ( 1.0, 0.0, 0.0, 1.0 );  \n"
-        "}                                            \n";
-
 TriangleSample::TriangleSample() = default;
 
 TriangleSample::~TriangleSample() {
-    if (program) {
-        delete program;
-        program = nullptr;
-    }
+    delete program;
+    program = nullptr;
 }
 
-void TriangleSample::init() {
-    program = new GLProgram(VERTEX_NAME, FRAG_NAME);
-}
-
-void TriangleSample::draw() {
+void TriangleSample::draw() const {
     GLfloat vVertices[] = {
             0.0f,  0.5f, 0.0f,
             -0.5f, -0.5f, 0.0f,
@@ -51,6 +25,14 @@ void TriangleSample::draw() {
     glEnableVertexAttribArray (0);
 
     glDrawArrays (GL_TRIANGLES, 0, 3);
+}
+
+const char *TriangleSample::vertexShaderName() const {
+    return "shaders/rect.vert";
+}
+
+const char *TriangleSample::fragShaderName() const {
+    return "shaders/rect.frag";
 }
 
 
