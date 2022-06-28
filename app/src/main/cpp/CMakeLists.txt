@@ -8,6 +8,7 @@ add_library(
         utils/android_fopen.cpp
         utils/GLUtils.cpp
         utils/GLProgram.cpp
+        utils/GLCamera.cpp
         renders/NativeRender_JNI.cpp
         renders/NativeRenderContext.cpp
         samples/BaseSample.cpp

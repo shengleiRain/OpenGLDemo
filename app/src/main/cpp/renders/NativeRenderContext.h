@@ -22,6 +22,8 @@ public:
     static void onDrawFrame();
 
     static void setBitmap(const ImageSharedPtr& imageSharedPtr);
+
+    static void moveCamera(int direction);
 private:
     static NativeRenderContext *sInstance;
     static std::once_flag sOnceFlag;

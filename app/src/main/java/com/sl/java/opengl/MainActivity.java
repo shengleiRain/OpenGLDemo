@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements GLSurfaceView.Ren
         findViewById(R.id.front).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                texRectRenderer.moveCamera(TexRectRenderer.Direction.FRONT);
+                nativeRender.moveCamera(TexRectRenderer.Direction.FRONT.ordinal());
                 surfaceView.requestRender();
             }
         });
@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements GLSurfaceView.Ren
         findViewById(R.id.back).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                texRectRenderer.moveCamera(TexRectRenderer.Direction.BACK);
+                nativeRender.moveCamera(TexRectRenderer.Direction.BACK.ordinal());
                 surfaceView.requestRender();
             }
         });
@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements GLSurfaceView.Ren
         findViewById(R.id.left).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                texRectRenderer.moveCamera(TexRectRenderer.Direction.LEFT);
+                nativeRender.moveCamera(TexRectRenderer.Direction.LEFT.ordinal());
                 surfaceView.requestRender();
             }
         });
@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements GLSurfaceView.Ren
         findViewById(R.id.right).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                texRectRenderer.moveCamera(TexRectRenderer.Direction.RIGHT);
+                nativeRender.moveCamera(TexRectRenderer.Direction.RIGHT.ordinal());
                 surfaceView.requestRender();
             }
         });

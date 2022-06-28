@@ -7,15 +7,23 @@
 
 #include "BaseSample.h"
 #include <GLES3/gl3.h>
+#include "GLCamera.h"
 
 class RectTexSample : public BaseSample {
 private:
     GLuint vao;
     GLuint vbo;
+    GLCamera camera;
 public:
     void draw() const override;
     void init() override;
     void setImageData(const ImageSharedPtr &imageSharedPtr) override;
+
+    void moveFront();
+
+    void moveBack();
+    void moveLeft();
+    void moveRight();
 
 protected:
     const char *vertexShaderName() const override;

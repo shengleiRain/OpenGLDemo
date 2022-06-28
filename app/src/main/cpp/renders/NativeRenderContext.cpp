@@ -40,3 +40,22 @@ void NativeRenderContext::onDrawFrame() {
 void NativeRenderContext::setBitmap(const ImageSharedPtr &imageSharedPtr) {
     rectTexSample.setImageData(imageSharedPtr);
 }
+
+void NativeRenderContext::moveCamera(int direction) {
+    switch (direction) {
+        case 0:
+            rectTexSample.moveFront();
+            break;
+        case 1:
+            rectTexSample.moveBack();
+            break;
+        case 2:
+            rectTexSample.moveLeft();
+            break;
+        case 3:
+            rectTexSample.moveRight();
+            break;
+        default:
+            break;
+    }
+}

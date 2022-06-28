@@ -26,6 +26,10 @@ public class NativeRender extends JNIBase{
         nativeSetBitmap(bitmap);
     }
 
+    public void moveCamera(int direction) {
+        nativeMoveCamera(direction);
+    }
+
 
     private native void nativeOnInit();
     private native void nativeOnUnInit();
@@ -33,4 +37,6 @@ public class NativeRender extends JNIBase{
     private native void nativeOnSurfaceChanged(int width, int height);
     private native void nativeOnDrawFrame();
     private native void nativeSetBitmap(Bitmap bitmap);
+    private native void nativeMoveCamera(int direction);
+
 }

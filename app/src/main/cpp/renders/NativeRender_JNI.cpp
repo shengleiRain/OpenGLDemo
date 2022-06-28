@@ -51,3 +51,10 @@ Java_com_sl_java_opengl_rendering_cnative_NativeRender_nativeSetBitmap(JNIEnv *e
     NativeRenderContext::setBitmap(imageSharedPtr);
     AndroidBitmap_unlockPixels(env, bitmap);
 }
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_sl_java_opengl_rendering_cnative_NativeRender_nativeMoveCamera(JNIEnv *env, jobject thiz,
+                                                                        jint direction) {
+    NativeRenderContext::moveCamera(direction);
+}
